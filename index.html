@@ -49,7 +49,16 @@
   .card.show{ transform:translateY(0); }
   .card .nm{ font-size:16px; font-weight:700; color:var(--pine); }
   .card .ad{ font-size:13px; color:var(--muted); margin:4px 0 10px; }
-  .card .row{ display:flex; gap:8px; }
+  .card .row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .card-info{ background:rgba(20,54,42,.05); padding:12px; border-radius:10px; margin:8px 0; font-size:14px; }
+  .card-info .hint{ font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:600; }
+  .card-info label{ display:flex; align-items:center; gap:6px; margin:6px 0; cursor:pointer; }
+  .card-info input[type="checkbox"]{ width:18px; height:18px; cursor:pointer; }
+  .card-info input[type="text"]{ width:100%; padding:8px; font-size:14px; border:1px solid var(--line); border-radius:8px; margin-top:8px; }
+  .wsection{ margin-top:16px; padding-top:12px; border-top:1px solid var(--line); }
+  .wsect-header{ font-weight:700; color:var(--pine); font-size:13px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+  .saveitem.wish{ opacity:.85; }
+  .badge{ display:inline-block; background:rgba(20,54,42,.15); color:var(--ink); font-size:12px; padding:3px 8px; border-radius:6px; margin-top:3px; margin-right:4px; }
   .btn{ flex:1; text-align:center; text-decoration:none; font-size:14px; font-weight:600; padding:10px; border-radius:10px; background:var(--pine); color:var(--paper); border:none; cursor:pointer; }
   .btn.ghost{ background:var(--paper); color:var(--pine); border:1px solid var(--line); }
   .btn.amber{ background:var(--amber); color:#2a1c05; }
@@ -160,11 +169,13 @@
   .rowbtns{ display:flex; gap:8px; margin-top:8px; }
   .rowbtns button{ flex:1; border:1px solid var(--line); background:#fff; border-radius:10px; padding:10px; font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; }
   .rowbtns button.danger{ color:var(--danger); }
-  .maptoggle{ position:absolute; z-index:15; top:calc(env(safe-area-inset-top,0px) + 10px); right:12px;
-    background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 11px; font-size:12px; font-weight:700;
+  .maptoggles{ position:absolute; z-index:8; top:calc(env(safe-area-inset-top,0px) + 50px); right:12px; display:flex; flex-direction:column; gap:8px; }
+  .speedo{ position:absolute; z-index:24; top:calc(env(safe-area-inset-top,0px) + 10px); right:12px; background:rgba(20,54,42,.92); color:#fff; border-radius:14px; padding:7px 16px; text-align:center; box-shadow:var(--shadow); min-width:92px; }
+  .speedo #speedo-val{ font-size:34px; font-weight:800; line-height:1; display:block; }
+  .speedo small{ font-size:11px; opacity:.85; letter-spacing:.5px; }
+  .maptoggle{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 11px; font-size:12px; font-weight:700;
     color:var(--pine); box-shadow:var(--shadow); cursor:pointer; }
-  .maptoggle.mkt{ top:calc(env(safe-area-inset-top,0px) + 52px); }
-  .mkt-badge{ width:20px; height:20px; border-radius:5px; border:2px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,.22), 0 1px 4px rgba(0,0,0,.35); font-size:12px; font-weight:800; line-height:1; display:flex; align-items:center; justify-content:center; }
+  .mkt-badge{ width:22px; height:22px; border-radius:5px; box-shadow:0 0 0 1px rgba(0,0,0,.30), 0 1px 4px rgba(0,0,0,.4); font-family:Arial,Helvetica,sans-serif; font-size:19px; font-weight:900; line-height:1; display:flex; align-items:center; justify-content:center; overflow:hidden; }
   .mkt-badge.aldi{ background:#fff; color:#1560c4; }
   .mkt-badge.lidl{ background:#ffd400; color:#1560c4; }
   .mkt-badge.kaufland{ background:#e10915; color:#fff; }
@@ -172,12 +183,21 @@
   .mkt-badge.spar svg{ display:block; }
   #toast{ position:absolute; z-index:60; left:50%; bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 20px); transform:translateX(-50%) translateY(20px); background:var(--pine); color:var(--paper); padding:10px 16px; border-radius:12px; font-size:14px; font-weight:600; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; max-width:82%; text-align:center; }
   #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .ppop{ font-size:13px; min-width:170px; }
+  .pp-name{ font-weight:700; color:var(--pine); font-size:14px; margin-bottom:3px; }
+  .pp-addr{ color:var(--muted); margin-bottom:6px; line-height:1.35; }
+  .pp-links{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .pp-links a{ font-size:12px; font-weight:600; color:var(--pine); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:4px 8px; }
+  .pp-add{ width:100%; border:none; background:var(--amber); color:#2a1c05; font-size:13px; font-weight:700; padding:8px; border-radius:8px; cursor:pointer; }
 </style>
 </head>
 <body>
 <div id="map"></div>
-<button id="map-toggle" class="maptoggle">Satellit</button>
-<button id="market-toggle" class="maptoggle mkt">Supermärkte</button>
+<div id="speedo" class="speedo hidden"><span id="speedo-val">–</span><small>km/h</small></div>
+<div class="maptoggles">
+  <button id="map-toggle" class="maptoggle">Satellit</button>
+  <button id="market-toggle" class="maptoggle">Supermärkte</button>
+</div>
 
 <div id="drivebar" class="drivebar hidden">
   <div class="info" id="drive-info">Fahrt aktiv – warte auf GPS …</div>
@@ -199,8 +219,15 @@
   <div id="card" class="card">
     <div id="card-name" class="nm"></div>
     <div id="card-addr" class="ad"></div>
+    <div id="card-info" class="card-info hidden">
+      <div class="hint">Zusatzinfos (optional)</div>
+      <label><input type="checkbox" id="card-water"> Lage am Wasser</label>
+      <label><input type="checkbox" id="card-dogs"> Hunde im Wasser erlaubt</label>
+      <input type="text" id="card-notes" placeholder="Notiz (max. 30 Zeichen)" maxlength="30">
+    </div>
     <div class="row">
-      <button id="card-save" class="btn amber">Speichern</button>
+      <button id="card-save" class="btn amber">Zu Favoriten</button>
+      <button id="card-wish" class="btn ghost">Als Wunschziel</button>
       <a id="card-maps" class="btn ghost" href="#" target="_blank" rel="noopener">In Karten</a>
     </div>
     <div id="card-coords" class="coords"></div>
@@ -302,6 +329,8 @@ const store={ get(k){ try{ const v=localStorage.getItem(k); return v==null?(k in
   set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ mem[k]=v; } } };
 
 let saved=store.get('ps_saved')||[];
+let wishlist=store.get('ps_wishlist')||[];
+let currentPlace=null;
 let tourOrder=store.get('ps_tour')||[];
 let key=store.get('ps_key')||'';
 let profiles=store.get('ps_profiles');
@@ -331,10 +360,38 @@ function toggleBasemap(){ const mt=document.getElementById('map-toggle'); satOn=
   if(routeLayer) routeLayer.setStyle(routeStyle()); }
 document.getElementById('map-toggle').addEventListener('click',toggleBasemap);
 
+/* GPS-Tacho (permanent aktiv) */
+let speedoWatch=null, speedoLast=null, speedoWake=null;
+function onSpeedFix(pos){ let kmh=null;
+  if(pos.coords.speed!=null && pos.coords.speed>=0){ kmh=pos.coords.speed*3.6; }
+  else if(speedoLast){ const dm=haversine(pos.coords.latitude,pos.coords.longitude,speedoLast.lat,speedoLast.lon)*1000; const dt=(pos.timestamp-speedoLast.t)/1000; if(dt>0) kmh=(dm/dt)*3.6; }
+  speedoLast={lat:pos.coords.latitude,lon:pos.coords.longitude,t:pos.timestamp};
+  if(kmh!=null && kmh<2) kmh=0;
+  document.getElementById('speedo-val').textContent = (kmh==null?'–':Math.round(kmh)); }
+function onSpeedErr(e){}
+function startSpeedo(){ const hud=document.getElementById('speedo');
+  if(!navigator.geolocation || !window.isSecureContext){ hud.classList.add('hidden'); return; }
+  hud.classList.remove('hidden'); document.getElementById('speedo-val').textContent='–'; speedoLast=null;
+  try{ if(navigator.wakeLock&&navigator.wakeLock.request) navigator.wakeLock.request('screen').then(w=>{speedoWake=w;}).catch(()=>{}); }catch(e){}
+  speedoWatch=navigator.geolocation.watchPosition(function(pos){
+    onSpeedFix(pos);
+    /* Prüfe Wunschziele: näher als 1 km? */
+    wishlist.forEach((w,idx)=>{
+      const dist=haversine(pos.coords.latitude,pos.coords.longitude,w.lat,w.lon);
+      if(dist<1){
+        saved.push(w); wishlist.splice(idx,1);
+        store.set('ps_saved',saved); store.set('ps_wishlist',wishlist);
+        redrawWishMarkers(); renderTour(); updateBadge();
+        toast('🚩 '+w.name+' besucht! Zu Favoriten hinzugefügt.');
+      }
+    });
+  },onSpeedErr,{enableHighAccuracy:true,maximumAge:1000,timeout:12000});
+}
+
 /* Aldi/Lidl-Märkte (OpenStreetMap, im Kartenausschnitt) */
-const aldiIcon=L.divIcon({className:'',html:'<div class="mkt-badge aldi">A</div>',iconSize:[22,22],iconAnchor:[11,11]});
+const aldiIcon=L.divIcon({className:'',html:'<div class="mkt-badge aldi"><svg viewBox="0 0 24 24" width="20" height="20"><polygon points="12,3 7,14 17,14" fill="#fff"/><polygon points="7,14 3,21 21,21" fill="#fff"/><line x1="8" y1="9" x2="11" y2="6" stroke="#0040c0" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="11" x2="13" y2="8" stroke="#0040c0" stroke-width="1.2" stroke-linecap="round"/><line x1="12" y1="13" x2="15" y2="10" stroke="#0040c0" stroke-width="1.2" stroke-linecap="round"/></svg></div>',iconSize:[22,22],iconAnchor:[11,11]});
 const lidlIcon=L.divIcon({className:'',html:'<div class="mkt-badge lidl">L</div>',iconSize:[22,22],iconAnchor:[11,11]});
-const sparIcon=L.divIcon({className:'',html:'<div class="mkt-badge spar"><svg viewBox="0 0 24 24" width="15" height="15"><polygon points="12,3 7,10 17,10" fill="#1a8a3c"/><polygon points="12,8 6,16 18,16" fill="#1a8a3c"/><rect x="11" y="16" width="2" height="4" fill="#6b4423"/></svg></div>',iconSize:[22,22],iconAnchor:[11,11]});
+const sparIcon=L.divIcon({className:'',html:'<div class="mkt-badge spar"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="none" stroke="#7dce9d" stroke-width="2"/><polygon points="12,4 8,9 16,9" fill="#1a8a3c"/><polygon points="12,9 6,14 18,14" fill="#1a8a3c"/><polygon points="12,14 5,20 19,20" fill="#1a8a3c"/><rect x="10.5" y="20" width="3" height="3" fill="#5a3728"/></svg></div>',iconSize:[22,22],iconAnchor:[11,11]});
 const kauflandIcon=L.divIcon({className:'',html:'<div class="mkt-badge kaufland">K</div>',iconSize:[22,22],iconAnchor:[11,11]});
 function marketIcon(nm){ if(nm.includes('kaufland')) return kauflandIcon; if(nm.includes('lidl')) return lidlIcon; if(nm.includes('spar')) return sparIcon; return aldiIcon; }
 let marketOn=false, marketMarkers=[], marketBusy=false, mktTimer=null, marketFails=0;
@@ -361,11 +418,11 @@ async function fetchMarkets(){ if(!marketOn) return; const btn=document.getEleme
   if(map.getZoom()<10){ clearMarkets(); btn.textContent='näher zoomen'; return; }
   if(marketBusy) return; marketBusy=true; btn.textContent='Märkte …';
   const b=map.getBounds(); const bbox=b.getSouth()+','+b.getWest()+','+b.getNorth()+','+b.getEast();
-  const q='[out:json][timeout:25];nwr["shop"~"^(supermarket|convenience)$"]["brand"~"Aldi|Lidl|Kaufland|Spar",i]('+bbox+');out center;';
+  const q='[out:json][timeout:25];nwr["shop"~"^(supermarket|convenience)$"]["brand"~"Aldi|Hofer|Lidl|Kaufland|Spar",i]('+bbox+');out center;';
   try{ const data=await overpass(q); clearMarkets(); let n=0;
     (data.elements||[]).forEach(el=>{ const la=el.lat!=null?el.lat:(el.center&&el.center.lat), lo=el.lon!=null?el.lon:(el.center&&el.center.lon); if(la==null) return;
       const tags=el.tags||{}; const nm=((tags.brand||tags.name)||'').toLowerCase(); const disp=tags.name||tags.brand||'Supermarkt';
-      const mk=L.marker([la,lo],{icon:marketIcon(nm)}).addTo(map); mk.on('click',function(){ addMarketStop(disp,la,lo); }); marketMarkers.push(mk); n++; });
+      const mk=L.marker([la,lo],{icon:marketIcon(nm)}).addTo(map); mk.on('click',function(){ addStop(disp,la,lo,'Supermarkt'); }); marketMarkers.push(mk); n++; });
     btn.textContent='Märkte ('+n+')'; marketFails=0;
   }catch(e){ marketFails++;
     if(marketFails<=2){ btn.textContent='Märkte …'; marketBusy=false; setTimeout(fetchMarkets,2500); return; }
@@ -376,10 +433,10 @@ document.getElementById('market-toggle').addEventListener('click',()=>{ marketOn
   if(marketOn){ fetchMarkets(); map.on('moveend',scheduleMarkets); } else { map.off('moveend',scheduleMarkets); clearMarkets(); b.textContent='Supermärkte'; } });
 
 function toast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); } t.textContent=msg; t.className='show'; clearTimeout(t._h); t._h=setTimeout(function(){ t.className=''; },2200); }
-function addMarketStop(name,lat,lon){
+function addStop(name,lat,lon,label){
   let ex=saved.find(s=>s.lat===lat && s.lon===lon), id;
   if(ex){ id=ex.id; if(tourOrder.indexOf(id)>=0){ toast(name+' ist bereits in der Tour'); return; } }
-  else { id='p'+Date.now()+Math.random().toString(36).slice(2,6); saved.push({id:id,name:name,addr:'Supermarkt',lat:lat,lon:lon}); }
+  else { id='p'+Date.now()+Math.random().toString(36).slice(2,6); saved.push({id:id,name:name,addr:label||'',lat:lat,lon:lon}); }
   if(tourOrder.length>=2) tourOrder.splice(tourOrder.length-1,0,id); else tourOrder.push(id);
   store.set('ps_saved',saved); store.set('ps_tour',tourOrder);
   updateBadge(); if(!views.tour.classList.contains('hidden')) renderTour();
@@ -387,14 +444,31 @@ function addMarketStop(name,lat,lon){
   if(routeCoords) planRoute();
 }
 const pinIcon=L.divIcon({className:'',html:'<div class="pin"><div class="head"></div></div>',iconSize:[26,26],iconAnchor:[13,24]});
-function stopIcon(n,home){ return L.divIcon({className:'',html:'<div class="pin '+(home?'home':'stop')+'"><div class="head"></div><div class="lbl">'+n+'</div></div>',iconSize:[26,26],iconAnchor:[13,24]}); }
+const wishIcon=L.divIcon({className:'',html:'<div style="font-size:24px;line-height:1">🚩</div>',iconSize:[24,24],iconAnchor:[12,24]});
+let wishMarkers=[];
+function redrawWishMarkers(){
+  wishMarkers.forEach(m=>m.remove()); wishMarkers=[];
+  wishlist.forEach(w=>{
+    const mk=L.marker([w.lat,w.lon],{icon:wishIcon}).addTo(map);
+    const pop=document.createElement('div'); pop.style.cssText='font-size:13px;';
+    const nm=document.createElement('div'); nm.style.cssText='font-weight:700;color:#16362a;margin-bottom:4px'; nm.textContent='🚩 '+w.name; pop.appendChild(nm);
+    if(w.addr){ const ad=document.createElement('div'); ad.style.cssText='color:#888;font-size:12px;margin-bottom:6px'; ad.textContent=w.addr; pop.appendChild(ad); }
+    const inf=document.createElement('div'); inf.style.cssText='font-size:12px;';
+    if(w.water) inf.innerHTML+='💧 Lage am Wasser<br>';
+    if(w.dogs) inf.innerHTML+='🐕 Hunde im Wasser erlaubt<br>';
+    if(w.notes) inf.innerHTML+='<strong>Notiz:</strong> '+w.notes+'<br>';
+    if(inf.innerHTML) pop.appendChild(inf);
+    mk.bindPopup(pop,{minWidth:180});
+    wishMarkers.push(mk);
+  });
+}
 const borderIcon=L.divIcon({className:'',html:'<div class="bmark">⚑</div>',iconSize:[20,20],iconAnchor:[10,10]});
 const gpsIcon=L.divIcon({className:'',html:'<div class="gps"></div>',iconSize:[16,16],iconAnchor:[8,8]});
 const pitchIcon=L.divIcon({className:'',html:'<div class="pin pitch"><div class="head"></div></div>',iconSize:[26,26],iconAnchor:[13,24]});
 const anchorIcon=L.divIcon({className:'',html:'<div class="anchor"></div>',iconSize:[16,16],iconAnchor:[8,8]});
 
 const ALONG_KM=30, LAT_KM=5;
-let searchMarker=null, routeLayer=null, stopMarkers=[], borderMarkers=[], currentPlace=null;
+let searchMarker=null, routeLayer=null, stopMarkers=[], borderMarkers=[];
 let routeCoords=null, routePrefix=null, borders=[];  // borders: {idx, lat, lon, cum}
 let pitchMode=false, pitchMarkers=[], anchorMarker=null, windowLayer=null;
 let lastGeo=null, lastStops=null, altSel=0;
@@ -408,7 +482,8 @@ Object.values(tabs).forEach(b=>b.addEventListener('click',()=>showView(b.dataset
 const el={ name:document.getElementById('q-name'), place:document.getElementById('q-place'), go:document.getElementById('go'),
   status:document.getElementById('status'), results:document.getElementById('results'), card:document.getElementById('card'),
   cName:document.getElementById('card-name'), cAddr:document.getElementById('card-addr'), cSave:document.getElementById('card-save'),
-  cMaps:document.getElementById('card-maps'), cCoords:document.getElementById('card-coords') };
+  cWish:document.getElementById('card-wish'), cMaps:document.getElementById('card-maps'), cCoords:document.getElementById('card-coords'),
+  cInfo:document.getElementById('card-info'), cWater:document.getElementById('card-water'), cDogs:document.getElementById('card-dogs'), cNotes:document.getElementById('card-notes') };
 
 function labelFor(item){ const a=item.address||{};
   const primary=item.name||a.tourism||(item.display_name||'').split(',')[0];
@@ -440,17 +515,30 @@ function renderResults(data){ el.results.innerHTML='';
 function selectResult(item,primary,secondary){
   const lat=parseFloat(item.lat), lon=parseFloat(item.lon);
   el.results.innerHTML=''; el.status.textContent=''; el.name.blur(); el.place.blur();
-  currentPlace={ id:'p'+Date.now(), name:primary, addr:secondary, lat, lon };
+  currentPlace={ id:'p'+Date.now(), name:primary, addr:secondary, lat, lon, water:false, dogs:false, notes:'' };
   if(searchMarker) searchMarker.remove();
   searchMarker=L.marker([lat,lon],{icon:pinIcon}).addTo(map);
   map.flyTo([lat,lon],14,{duration:.8});
   el.cName.textContent=primary; el.cAddr.textContent=secondary; el.cCoords.textContent=lat.toFixed(5)+', '+lon.toFixed(5);
   el.cMaps.href='https://maps.apple.com/?ll='+lat+','+lon+'&q='+encodeURIComponent(primary);
+  el.cWater.checked=false; el.cDogs.checked=false; el.cNotes.value='';
+  el.cInfo.classList.remove('hidden');
   updateSaveBtn(); el.card.classList.add('show');
 }
 function isSaved(p){ return saved.some(s=>s.lat===p.lat&&s.lon===p.lon); }
 function updateSaveBtn(){ if(currentPlace&&isSaved(currentPlace)){ el.cSave.textContent='Gespeichert ✓'; el.cSave.disabled=true; } else { el.cSave.textContent='Speichern'; el.cSave.disabled=false; } }
-el.cSave.addEventListener('click',()=>{ if(!currentPlace||isSaved(currentPlace)) return; saved.push(currentPlace); store.set('ps_saved',saved); updateSaveBtn(); updateBadge(); });
+el.cSave.addEventListener('click',()=>{
+  if(!currentPlace) return;
+  currentPlace.water=el.cWater.checked; currentPlace.dogs=el.cDogs.checked; currentPlace.notes=el.cNotes.value;
+  if(!isSaved(currentPlace)){ saved.push(currentPlace); store.set('ps_saved',saved); updateBadge(); }
+  el.card.classList.remove('show'); toast(currentPlace.name+' zu Favoriten hinzugefügt');
+});
+el.cWish.addEventListener('click',()=>{
+  if(!currentPlace) return;
+  currentPlace.water=el.cWater.checked; currentPlace.dogs=el.cDogs.checked; currentPlace.notes=el.cNotes.value;
+  if(!wishlist.some(w=>w.lat===currentPlace.lat && w.lon===currentPlace.lon)){ wishlist.push(currentPlace); store.set('ps_wishlist',wishlist); redrawWishMarkers(); }
+  el.card.classList.remove('show'); toast(currentPlace.name+' zu Wunschzielen hinzugefügt');
+});
 el.go.addEventListener('click',search);
 [el.name,el.place].forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); search(); } }));
 
@@ -487,6 +575,23 @@ function renderTour(){
   tourListEl.appendChild(oo);
   const ocb=oo.querySelector('#opt-cb'); ocb.checked=optimize;
   ocb.addEventListener('change',()=>{ optimize=ocb.checked; store.set('ps_opt',optimize); });
+  
+  /* Wunschziele */
+  if(wishlist.length){
+    const ws=document.createElement('div'); ws.className='wsection';
+    ws.innerHTML='<div class="wsect-header">Wunschziele</div>';
+    wishlist.forEach(w=>{ 
+      const wi=document.createElement('div'); wi.className='saveitem wish';
+      wi.innerHTML='<div class="txt"><div class="nm">🚩 '+w.name+'</div><div class="ad">'+w.addr+'</div>';
+      if(w.water) wi.innerHTML+='<div class="badge">💧 Wasser</div>';
+      if(w.dogs) wi.innerHTML+='<div class="badge">🐕 Hunde ok</div>';
+      if(w.notes) wi.innerHTML+='<div class="badge">'+w.notes+'</div>';
+      wi.innerHTML+='</div><button class="del">Löschen</button>';
+      wi.querySelector('.del').addEventListener('click',()=>{ wishlist=wishlist.filter(x=>x.id!==w.id); store.set('ps_wishlist',wishlist); redrawWishMarkers(); renderTour(); });
+      ws.appendChild(wi);
+    });
+    tourListEl.appendChild(ws);
+  }
 }
 function toggleTour(id){ const i=tourOrder.indexOf(id); if(i>=0) tourOrder.splice(i,1); else tourOrder.push(id); store.set('ps_tour',tourOrder); renderTour(); }
 function removeSaved(id){ saved=saved.filter(s=>s.id!==id); tourOrder=tourOrder.filter(t=>t!==id); store.set('ps_saved',saved); store.set('ps_tour',tourOrder); renderTour(); updateBadge(); updateSaveBtn(); }
@@ -700,7 +805,7 @@ pitchBtn.addEventListener('click',()=>{ if(!routeCoords) return;
   pitchMode=!pitchMode; pitchBtn.textContent=pitchMode?'Tippen beenden':'Stellplätze entlang Route';
   document.getElementById('map').style.cursor=pitchMode?'crosshair':'';
   pitchStatus.textContent=pitchMode?'Tippe einen Punkt nahe der Route an (±'+ALONG_KM+' km entlang der Strecke, max. '+LAT_KM+' km seitlich).':'';
-  if(pitchMode) setSheetCollapsed(true); });
+  if(pitchMode){ setSheetCollapsed(true); toast('Jetzt auf einen Punkt der Route tippen'); } });
 
 /* Einklappbares Menü */
 const tourSheet=document.getElementById('tour-sheet'), sheetHandle=document.getElementById('sheet-handle'), sheetHLabel=document.getElementById('sheet-hlabel');
@@ -724,31 +829,42 @@ async function searchPitches(lat,lon){
   winIdx.forEach(i=>{ const la=routeCoords[i][1],lo=routeCoords[i][0]; if(la<minLat)minLat=la; if(la>maxLat)maxLat=la; if(lo<minLon)minLon=lo; if(lo>maxLon)maxLon=lo; });
   const clat=routeCoords[bi][1], mLat=LAT_KM/111, mLon=LAT_KM/(111*Math.cos(clat*Math.PI/180));
   const bbox=(minLat-mLat)+','+(minLon-mLon)+','+(maxLat+mLat)+','+(maxLon+mLon);
-  pitchStatus.textContent='Stellplätze werden gesucht …';
+  pitchStatus.textContent='Stellplätze werden gesucht …'; toast('Stellplätze werden gesucht …');
   const q='[out:json][timeout:25];(nwr["tourism"="caravan_site"]('+bbox+');nwr["tourism"="camp_site"]('+bbox+'););out center;';
   try{
     const data=await overpass(q);
     const results=[];
     (data.elements||[]).forEach(el=>{ const la=el.lat!=null?el.lat:(el.center&&el.center.lat), lo=el.lon!=null?el.lon:(el.center&&el.center.lon); if(la==null) return;
       const t=el.tags||{}; let md=Infinity,mi=winIdx[0]; for(const i of winIdx){ const d=haversine(la,lo,routeCoords[i][1],routeCoords[i][0]); if(d<md){md=d;mi=i;} }
-      if(md<=LAT_KM) results.push({ name:t.name||t['name:de']||(t.tourism==='camp_site'?'Campingplatz':'Stellplatz'), type:t.tourism, lat:la, lon:lo, dist:md, cum:routePrefix[mi]-centerCum }); });
+      if(md<=LAT_KM){ const addr=[((t['addr:street']||'')+' '+(t['addr:housenumber']||'')).trim(), ((t['addr:postcode']||'')+' '+(t['addr:city']||'')).trim()].filter(Boolean).join(', ');
+        results.push({ name:t.name||t['name:de']||(t.tourism==='camp_site'?'Campingplatz':'Stellplatz'), type:t.tourism, lat:la, lon:lo, dist:md, cum:routePrefix[mi]-centerCum, addr:addr, phone:t.phone||t['contact:phone']||'', website:t.website||t['contact:website']||'' }); } });
     results.sort((a,b)=>a.cum-b.cum);
     renderPitches(results);
-  }catch(e){ pitchStatus.textContent='Stellplatz-Suche fehlgeschlagen: '+e.message; }
+  }catch(e){ pitchStatus.textContent='Stellplatz-Suche fehlgeschlagen: '+e.message; toast('Stellplatz-Suche fehlgeschlagen'); }
 }
 function renderPitches(list){
   pitchListEl.innerHTML='';
-  if(!list.length){ pitchStatus.textContent='Keine Stellplätze im Korridor gefunden (offene Kartendaten).'; return; }
-  pitchStatus.textContent=list.length+' Treffer im Korridor. Aktuelle Verfügbarkeit in Park4Night/Stellplatz-Radar prüfen.';
+  if(!list.length){ pitchStatus.textContent='Keine Stellplätze im Korridor gefunden (offene Kartendaten).'; toast('Keine Stellplätze im Korridor (±'+ALONG_KM+' km)'); return; }
+  pitchStatus.textContent=list.length+' Treffer im Korridor. Aktuelle Verfügbarkeit in Park4Night/Stellplatz-Radar prüfen.'; toast(list.length+' Stellplätze gefunden');
   list.forEach(c=>{
-    pitchMarkers.push(L.marker([c.lat,c.lon],{icon:pitchIcon}).addTo(map));
+    const mk=L.marker([c.lat,c.lon],{icon:pitchIcon}).addTo(map);
+    const pop=document.createElement('div'); pop.className='ppop';
+    const nmd=document.createElement('div'); nmd.className='pp-name'; nmd.textContent=(c.type==='camp_site'?'⛺ ':'🅿 ')+c.name; pop.appendChild(nmd);
+    if(c.addr){ const ad=document.createElement('div'); ad.className='pp-addr'; ad.textContent=c.addr; pop.appendChild(ad); }
+    const links=document.createElement('div'); links.className='pp-links';
+    if(c.phone){ const a=document.createElement('a'); a.href='tel:'+c.phone.replace(/[^+\d]/g,''); a.textContent='Anrufen'; links.appendChild(a); }
+    if(c.website){ const a=document.createElement('a'); a.href=c.website; a.target='_blank'; a.rel='noopener'; a.textContent='Webseite'; links.appendChild(a); }
+    const am=document.createElement('a'); am.href='https://maps.apple.com/?ll='+c.lat+','+c.lon+'&q='+encodeURIComponent(c.name); am.target='_blank'; am.rel='noopener'; am.textContent='Karten'; links.appendChild(am);
+    pop.appendChild(links);
+    const add=document.createElement('button'); add.className='pp-add'; add.textContent='Als Zwischenziel'; add.addEventListener('click',function(){ addStop(c.name,c.lat,c.lon,c.addr||'Stellplatz'); mk.closePopup(); }); pop.appendChild(add);
+    mk.bindPopup(pop,{minWidth:190}); pitchMarkers.push(mk);
     const pos=c.cum>=0?Math.round(c.cum)+' km nach dem Punkt':Math.round(-c.cum)+' km vor dem Punkt';
     const it=document.createElement('div'); it.className='pitem';
     it.innerHTML='<div class="txt"><div class="nm"></div><div class="meta"></div></div>';
     it.querySelector('.nm').textContent=(c.type==='camp_site'?'⛺ ':'🅿 ')+c.name;
     it.querySelector('.meta').textContent=pos+' · '+c.dist.toFixed(1)+' km seitlich';
-    const a=document.createElement('a'); a.href='https://maps.apple.com/?ll='+c.lat+','+c.lon+'&q='+encodeURIComponent(c.name); a.target='_blank'; a.rel='noopener'; a.textContent='Karte';
-    it.appendChild(a); pitchListEl.appendChild(it);
+    it.style.cursor='pointer'; it.addEventListener('click',function(){ map.panTo([c.lat,c.lon]); mk.openPopup(); });
+    pitchListEl.appendChild(it);
   });
 }
 
@@ -782,7 +898,7 @@ function loadSharedTour(){
   }catch(e){}
 }
 
-loadSetup(); updateBadge(); loadSharedTour();
+loadSetup(); updateBadge(); loadSharedTour(); startSpeedo(); redrawWishMarkers();
 </script>
 </body>
 </html>
