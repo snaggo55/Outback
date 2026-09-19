@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Solar Autonomie">
+<title>Solar Autonomie Rechner</title>
+<meta name="theme-color" content="#1a1a2e">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f1a;--surface:#1a1a2e;--surface2:#252540;--surface3:#2f2f50;
+  --text:#e8e8f0;--text2:#a0a0b8;--accent:#f0c040;--accent2:#e8a020;
+  --green:#40c060;--red:#e04040;--blue:#4080e0;
+  --radius:12px;--gap:16px;
+  font-size:16px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:env(safe-area-inset-top) var(--gap) calc(env(safe-area-inset-bottom) + var(--gap)) var(--gap);overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+.container{max-width:480px;margin:0 auto}
+header{text-align:center;padding:20px 0 12px}
+header h1{font-size:1.4rem;font-weight:700;color:var(--accent)}
+header p{font-size:.8rem;color:var(--text2);margin-top:4px}
+
+.card{background:var(--surface);border-radius:var(--radius);padding:var(--gap);margin-bottom:var(--gap)}
+.card h2{font-size:.85rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 .icon{font-size:1.1rem}
+
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:5px;font-weight:500}
+.field input[type="number"],
+.field input[type="date"],
+.field input[type="time"],
+.field select{
+  width:100%;background:var(--surface2);border:1px solid var(--surface3);color:var(--text);
+  border-radius:8px;padding:10px 12px;font-size:.95rem;outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.field .unit{font-size:.75rem;color:var(--text2);margin-top:3px}
+
+.row{display:flex;gap:10px}
+.row .field{flex:1}
+
+.toggle-group{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--surface3)}
+.toggle-group button{
+  flex:1;padding:10px 8px;background:var(--surface2);color:var(--text2);
+  border:none;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .2s;
+}
+.toggle-group button.active{background:var(--accent);color:#1a1a2e;font-weight:700}
+
+.location-btn{
+  width:100%;padding:12px;background:var(--blue);color:#fff;border:none;
+  border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .2s;
+}
+.location-btn:active{opacity:.7}
+.location-btn:disabled{opacity:.5;cursor:not-allowed}
+.location-info{font-size:.78rem;color:var(--text2);margin-top:8px;text-align:center}
+
+.calc-btn{
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#1a1a2e;border:none;border-radius:var(--radius);font-size:1rem;
+  font-weight:700;cursor:pointer;transition:transform .1s,opacity .2s;
+  letter-spacing:.3px;
+}
+.calc-btn:active{transform:scale(.97)}
+
+.result{background:var(--surface);border-radius:var(--radius);padding:20px;margin-top:var(--gap);display:none}
+.result.visible{display:block}
+.result-header{text-align:center;margin-bottom:16px}
+.result-header .days{font-size:2.8rem;font-weight:800;color:var(--accent)}
+.result-header .days-label{font-size:.85rem;color:var(--text2);margin-top:2px}
+.result-header .unlimited{font-size:1.3rem;font-weight:700;color:var(--green)}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-item{background:var(--surface2);border-radius:8px;padding:10px}
+.detail-item .val{font-size:1.1rem;font-weight:700;color:var(--text)}
+.detail-item .lbl{font-size:.7rem;color:var(--text2);margin-top:2px}
+
+.bar{margin-top:14px}
+.bar-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text2);margin-bottom:4px}
+.bar-track{height:8px;background:var(--surface3);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+
+.warning{background:rgba(224,64,64,.15);border:1px solid rgba(224,64,64,.3);border-radius:8px;padding:10px;margin-top:12px;font-size:.78rem;color:var(--red)}
+
+.slider-container{position:relative}
+.slider-container input[type="range"]{
+  width:100%;-webkit-appearance:none;appearance:none;height:6px;
+  background:var(--surface3);border-radius:3px;outline:none;
+}
+.slider-container input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--accent);cursor:pointer;border:2px solid var(--bg);
+}
+.slider-val{text-align:right;font-size:.85rem;color:var(--accent);font-weight:600;margin-bottom:4px}
+
+.angle-field{display:none}
+.angle-field.visible{display:block}
+
+.chart-container{margin-top:14px}
+.chart-container canvas{width:100%!important;height:200px!important}
+
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:.82rem;margin-bottom:8px}
+.back-link:hover{color:var(--text)}
+
+.consumption-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.consumption-presets button{
+  padding:5px 10px;background:var(--surface2);border:1px solid var(--surface3);
+  color:var(--text2);border-radius:6px;font-size:.72rem;cursor:pointer;
+}
+.consumption-presets button:active{background:var(--accent);color:#1a1a2e}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-link">&#8592; Platzsuche</a>
+  <header>
+    <h1>Solar Autonomie Rechner</h1>
+    <p>LiFePO4 Batterie &middot; Wohnmobil</p>
+  </header>
+
+  <!-- Standort -->
+  <div class="card">
+    <h2><span class="icon">&#128205;</span> Standort</h2>
+    <button class="location-btn" id="locateBtn" onclick="getLocation()">
+      &#128225; Standort bestimmen
+    </button>
+    <div class="location-info" id="locationInfo">Standort noch nicht ermittelt</div>
+    <div class="row" style="margin-top:12px">
+      <div class="field">
+        <label>Breitengrad</label>
+        <input type="number" id="latitude" step="0.001" placeholder="z.B. 48.137" value="">
+      </div>
+      <div class="field">
+        <label>L&auml;ngengrad</label>
+        <input type="number" id="longitude" step="0.001" placeholder="z.B. 11.576" value="">
+      </div>
+    </div>
+  </div>
+
+  <!-- Batterie -->
+  <div class="card">
+    <h2><span class="icon">&#128267;</span> Batterie</h2>
+    <div class="field">
+      <label>Batteriekapazit&auml;t</label>
+      <input type="number" id="batteryAh" min="50" max="1000" step="10" value="200">
+      <div class="unit">Amperestunden (Ah) &middot; LiFePO4 nutzbar: 95%</div>
+    </div>
+    <div class="field">
+      <label>Systemspannung</label>
+      <div class="toggle-group">
+        <button class="active" onclick="setVoltage(12,this)">12V</button>
+        <button onclick="setVoltage(24,this)">24V</button>
+        <button onclick="setVoltage(48,this)">48V</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verbrauch -->
+  <div class="card">
+    <h2><span class="icon">&#9889;</span> Tagesverbrauch</h2>
+    <div class="consumption-presets">
+      <button onclick="setConsumption(30)">Sparsam 30Ah</button>
+      <button onclick="setConsumption(50)">Normal 50Ah</button>
+      <button onclick="setConsumption(80)">Komfort 80Ah</button>
+      <button onclick="setConsumption(120)">Hoch 120Ah</button>
+    </div>
+    <div class="field">
+      <label>Tagesverbrauch</label>
+      <input type="number" id="dailyConsumption" min="5" max="500" step="5" value="50">
+      <div class="unit">Amperestunden pro Tag (Ah/Tag) bei Systemspannung</div>
+    </div>
+  </div>
+
+  <!-- Solar -->
+  <div class="card">
+    <h2><span class="icon">&#9728;&#65039;</span> Solarpaneele</h2>
+    <div class="field">
+      <label>Gesamtleistung der Solarpaneele</label>
+      <input type="number" id="solarWp" min="50" max="2000" step="10" value="400">
+      <div class="unit">Watt peak (Wp)</div>
+    </div>
+    <div class="field">
+      <label>Montage</label>
+      <div class="toggle-group">
+        <button class="active" onclick="setMounting('flat',this)">Flach</button>
+        <button onclick="setMounting('angled',this)">Aufgest&auml;nder</button>
+      </div>
+    </div>
+    <div class="field angle-field" id="angleField">
+      <label>Aufstellwinkel: <span id="angleVal">30</span>&deg;</label>
+      <div class="slider-container">
+        <input type="range" id="panelAngle" min="5" max="60" step="1" value="30" oninput="document.getElementById('angleVal').textContent=this.value">
+      </div>
+    </div>
+  </div>
+
+  <!-- Sonnenstunden -->
+  <div class="card">
+    <h2><span class="icon">&#127749;</span> Sonneneinstrahlung</h2>
+    <p style="font-size:.78rem;color:var(--text2);margin-bottom:12px">
+      Zeitraum, in dem die Paneele tats&auml;chlich Sonne bekommen (Abschattung durch B&auml;ume, Geb&auml;ude etc. ber&uuml;cksichtigen).
+    </p>
+    <div class="row">
+      <div class="field">
+        <label>Sonne von</label>
+        <input type="time" id="sunFrom" value="08:00">
+      </div>
+      <div class="field">
+        <label>Sonne bis</label>
+        <input type="time" id="sunTo" value="18:00">
+      </div>
+    </div>
+    <div class="field" style="margin-top:8px">
+      <div class="slider-val" id="sunPctVal">100%</div>
+      <label>Standortfaktor (Verschattung, Ausrichtung)</label>
+      <div class="slider-container">
+        <input type="range" id="sunPct" min="10" max="100" step="5" value="100" oninput="document.getElementById('sunPctVal').textContent=this.value+'%'">
+      </div>
+    </div>
+  </div>
+
+  <!-- Zeitraum -->
+  <div class="card">
+    <h2><span class="icon">&#128197;</span> Reisezeitraum</h2>
+    <div class="row">
+      <div class="field">
+        <label>Von</label>
+        <input type="date" id="dateFrom">
+      </div>
+      <div class="field">
+        <label>Bis</label>
+        <input type="date" id="dateTo">
+      </div>
+    </div>
+  </div>
+
+  <!-- Berechnen -->
+  <button class="calc-btn" onclick="calculate()">Autonomie berechnen</button>
+
+  <!-- Ergebnis -->
+  <div class="result" id="resultPanel">
+    <div class="result-header">
+      <div class="days" id="resDays">--</div>
+      <div class="days-label" id="resDaysLabel">Tage autark</div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="val" id="resSolarDaily">--</div>
+        <div class="lbl">Solar Ertrag/Tag (Ah)</div>
+      </div>
+      <div class="detail-item">
+        <div class="val" id="resConsDaily">--</div>
+        <div class="lbl">Verbrauch/Tag (Ah)</div>
+      </div>
+      <div class="detail-item">
+        <div class="val" id="resBattUsable">--</div>
+        <div class="lbl">Nutzbare Batterie (Ah)</div>
+      </div>
+      <div class="detail-item">
+        <div class="val" id="resBalance">--</div>
+        <div class="lbl">Tagesbilanz (Ah)</div>
+      </div>
+    </div>
+
+    <div class="bar" id="balanceBar">
+      <div class="bar-label">
+        <span>Solar vs. Verbrauch</span>
+        <span id="barPct">0%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="barFill" style="width:0%;background:var(--green)"></div>
+      </div>
+    </div>
+
+    <div class="chart-container" id="chartContainer" style="display:none">
+      <canvas id="dayChart"></canvas>
+    </div>
+
+    <div class="warning" id="warningBox" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+let systemVoltage = 12;
+let mountingType = 'flat';
+
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+document.getElementById('dateFrom').value = todayStr;
+const nextWeek = new Date(today);
+nextWeek.setDate(nextWeek.getDate() + 14);
+document.getElementById('dateTo').value = nextWeek.toISOString().split('T')[0];
+
+function setVoltage(v, btn) {
+  systemVoltage = v;
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setMounting(type, btn) {
+  mountingType = type;
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('angleField').classList.toggle('visible', type === 'angled');
+}
+
+function setConsumption(val) {
+  document.getElementById('dailyConsumption').value = val;
+}
+
+function getLocation() {
+  const btn = document.getElementById('locateBtn');
+  const info = document.getElementById('locationInfo');
+  if (!navigator.geolocation) {
+    info.textContent = 'Geolocation wird nicht unterstützt';
+    return;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '&#8987; Standort wird ermittelt...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      document.getElementById('latitude').value = lat.toFixed(4);
+      document.getElementById('longitude').value = lon.toFixed(4);
+      info.textContent = `${lat.toFixed(4)}° N, ${lon.toFixed(4)}° E — Genauigkeit: ${Math.round(pos.coords.accuracy)}m`;
+      btn.disabled = false;
+      btn.innerHTML = '&#128225; Standort aktualisieren';
+      reverseGeocode(lat, lon);
+    },
+    err => {
+      info.textContent = 'Fehler: ' + err.message;
+      btn.disabled = false;
+      btn.innerHTML = '&#128225; Standort bestimmen';
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+function reverseGeocode(lat, lon) {
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=de`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.display_name) {
+        const parts = data.display_name.split(',');
+        const short = parts.slice(0, 3).join(',').trim();
+        document.getElementById('locationInfo').textContent = short;
+      }
+    })
+    .catch(() => {});
+}
+
+function degToRad(d) { return d * Math.PI / 180; }
+function radToDeg(r) { return r * 180 / Math.PI; }
+
+function solarDeclination(dayOfYear) {
+  return 23.45 * Math.sin(degToRad(360 / 365 * (dayOfYear - 81)));
+}
+
+function daylightHours(lat, dayOfYear) {
+  const decl = solarDeclination(dayOfYear);
+  const latRad = degToRad(lat);
+  const declRad = degToRad(decl);
+  const cosHa = -Math.tan(latRad) * Math.tan(declRad);
+  if (cosHa < -1) return 24;
+  if (cosHa > 1) return 0;
+  const ha = radToDeg(Math.acos(cosHa));
+  return (2 * ha) / 15;
+}
+
+function solarNoonAltitude(lat, dayOfYear) {
+  const decl = solarDeclination(dayOfYear);
+  return 90 - Math.abs(lat - decl);
+}
+
+function estimateDailySolarIrradiance(lat, dayOfYear) {
+  const dlHours = daylightHours(lat, dayOfYear);
+  if (dlHours <= 0) return 0;
+  const altitude = solarNoonAltitude(lat, dayOfYear);
+  if (altitude <= 0) return 0;
+  const clearSkyPeak = 1000 * Math.sin(degToRad(altitude));
+  const avgFraction = 0.64;
+  const atmosphericLoss = 0.75;
+  return (clearSkyPeak * avgFraction * atmosphericLoss * dlHours) / 1000;
+}
+
+function tiltFactor(lat, dayOfYear, tiltAngle) {
+  const decl = solarDeclination(dayOfYear);
+  const solarAlt = solarNoonAltitude(lat, dayOfYear);
+  if (solarAlt <= 0) return 0;
+  const optimalTilt = Math.abs(lat - decl);
+  const flatIncidence = Math.sin(degToRad(solarAlt));
+  const tiltedIncidence = Math.sin(degToRad(Math.min(90, solarAlt + tiltAngle)));
+  if (flatIncidence <= 0) return 1;
+  let factor = tiltedIncidence / flatIncidence;
+  const tiltDiff = Math.abs(tiltAngle - optimalTilt);
+  if (tiltDiff > 30) factor *= 0.85;
+  return Math.max(0.5, Math.min(1.5, factor));
+}
+
+function getDayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date - start;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+function sunriseHour(lat, dayOfYear) {
+  const dl = daylightHours(lat, dayOfYear);
+  return 12 - dl / 2;
+}
+
+function sunsetHour(lat, dayOfYear) {
+  const dl = daylightHours(lat, dayOfYear);
+  return 12 + dl / 2;
+}
+
+function timeToDecimal(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h + m / 60;
+}
+
+function calculate() {
+  const lat = parseFloat(document.getElementById('latitude').value);
+  const lon = parseFloat(document.getElementById('longitude').value);
+  if (isNaN(lat) || isNaN(lon)) {
+    alert('Bitte Standort bestimmen oder Koordinaten eingeben.');
+    return;
+  }
+
+  const batteryAh = parseFloat(document.getElementById('batteryAh').value) || 200;
+  const dailyConsumption = parseFloat(document.getElementById('dailyConsumption').value) || 50;
+  const solarWp = parseFloat(document.getElementById('solarWp').value) || 400;
+  const panelAngle = parseFloat(document.getElementById('panelAngle').value) || 30;
+  const sunFrom = document.getElementById('sunFrom').value;
+  const sunTo = document.getElementById('sunTo').value;
+  const sunPct = parseFloat(document.getElementById('sunPct').value) / 100;
+  const dateFrom = new Date(document.getElementById('dateFrom').value);
+  const dateTo = new Date(document.getElementById('dateTo').value);
+
+  if (isNaN(dateFrom.getTime()) || isNaN(dateTo.getTime()) || dateTo <= dateFrom) {
+    alert('Bitte gültigen Zeitraum wählen.');
+    return;
+  }
+
+  const usableBattery = batteryAh * 0.95;
+  const sunFromDec = timeToDecimal(sunFrom);
+  const sunToDec = timeToDecimal(sunTo);
+  const userSunWindow = Math.max(0, sunToDec - sunFromDec);
+
+  const totalDays = Math.ceil((dateTo - dateFrom) / (1000 * 60 * 60 * 24));
+  let batteryState = usableBattery;
+  let autarkDays = 0;
+  const dailyData = [];
+  let totalSolarAh = 0;
+
+  for (let d = 0; d < totalDays; d++) {
+    const currentDate = new Date(dateFrom);
+    currentDate.setDate(currentDate.getDate() + d);
+    const doy = getDayOfYear(currentDate);
+
+    const dlHours = daylightHours(lat, doy);
+    const sunrise = sunriseHour(lat, doy);
+    const sunset = sunsetHour(lat, doy);
+
+    const effectiveFrom = Math.max(sunFromDec, sunrise);
+    const effectiveTo = Math.min(sunToDec, sunset);
+    const effectiveHours = Math.max(0, effectiveTo - effectiveFrom);
+
+    const fullDayIrradiance = estimateDailySolarIrradiance(lat, doy);
+    const hourlyFraction = dlHours > 0 ? effectiveHours / dlHours : 0;
+    let irradiance = fullDayIrradiance * hourlyFraction;
+
+    if (mountingType === 'angled') {
+      irradiance *= tiltFactor(lat, doy, panelAngle);
+    }
+
+    irradiance *= sunPct;
+
+    const systemEfficiency = 0.85;
+    const solarWh = solarWp * irradiance * systemEfficiency;
+    const solarAh = solarWh / systemVoltage;
+
+    totalSolarAh += solarAh;
+
+    const netBalance = solarAh - dailyConsumption;
+    batteryState += netBalance;
+    batteryState = Math.min(batteryState, usableBattery);
+
+    dailyData.push({
+      date: currentDate,
+      solarAh: solarAh,
+      consumption: dailyConsumption,
+      balance: netBalance,
+      batteryState: Math.max(0, batteryState),
+      effectiveHours: effectiveHours
+    });
+
+    if (batteryState > 0) {
+      autarkDays = d + 1;
+    } else {
+      break;
+    }
+  }
+
+  const avgSolarAh = totalSolarAh / Math.min(dailyData.length, totalDays);
+  const avgBalance = avgSolarAh - dailyConsumption;
+
+  displayResults(autarkDays, totalDays, avgSolarAh, dailyConsumption, usableBattery, avgBalance, dailyData);
+}
+
+function displayResults(autarkDays, totalDays, avgSolarAh, consumption, usableBattery, avgBalance, dailyData) {
+  const panel = document.getElementById('resultPanel');
+  panel.classList.add('visible');
+
+  const daysEl = document.getElementById('resDays');
+  const labelEl = document.getElementById('resDaysLabel');
+
+  if (autarkDays >= totalDays) {
+    daysEl.textContent = totalDays;
+    daysEl.style.color = 'var(--green)';
+    labelEl.innerHTML = 'Tage autark <span style="color:var(--green)">(gesamter Zeitraum)</span>';
+  } else {
+    daysEl.textContent = autarkDays;
+    daysEl.style.color = autarkDays > 3 ? 'var(--accent)' : 'var(--red)';
+    labelEl.textContent = `von ${totalDays} Tagen autark`;
+  }
+
+  document.getElementById('resSolarDaily').textContent = avgSolarAh.toFixed(1);
+  document.getElementById('resConsDaily').textContent = consumption.toFixed(1);
+  document.getElementById('resBattUsable').textContent = usableBattery.toFixed(0);
+
+  const balanceEl = document.getElementById('resBalance');
+  balanceEl.textContent = (avgBalance >= 0 ? '+' : '') + avgBalance.toFixed(1);
+  balanceEl.style.color = avgBalance >= 0 ? 'var(--green)' : 'var(--red)';
+
+  const pct = Math.min(100, (avgSolarAh / consumption) * 100);
+  document.getElementById('barPct').textContent = pct.toFixed(0) + '%';
+  const barFill = document.getElementById('barFill');
+  barFill.style.width = pct + '%';
+  barFill.style.background = pct >= 100 ? 'var(--green)' : pct >= 60 ? 'var(--accent)' : 'var(--red)';
+
+  const warn = document.getElementById('warningBox');
+  if (avgBalance < 0 && autarkDays < totalDays) {
+    warn.style.display = 'block';
+    const deficit = Math.abs(avgBalance).toFixed(1);
+    warn.textContent = `Tägliches Defizit von ${deficit} Ah. Die Batterie ist nach ${autarkDays} Tag(en) leer. Verbrauch senken oder Solarleistung erhöhen.`;
+  } else {
+    warn.style.display = 'none';
+  }
+
+  drawChart(dailyData);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function drawChart(data) {
+  const container = document.getElementById('chartContainer');
+  container.style.display = 'block';
+  const canvas = document.getElementById('dayChart');
+  const ctx = canvas.getContext('2d');
+
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 200 * dpr;
+  ctx.scale(dpr, dpr);
+
+  const w = rect.width;
+  const h = 200;
+  const pad = { top: 20, right: 10, bottom: 30, left: 40 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const maxBatt = Math.max(...data.map(d => d.batteryState), data[0].batteryState);
+  const maxY = Math.ceil(maxBatt / 10) * 10;
+
+  ctx.strokeStyle = '#333350';
+  ctx.lineWidth = 0.5;
+  ctx.font = '10px sans-serif';
+  ctx.fillStyle = '#808098';
+  ctx.textAlign = 'right';
+
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + ch - (ch * i / 4);
+    const val = (maxY * i / 4).toFixed(0);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(w - pad.right, y);
+    ctx.stroke();
+    ctx.fillText(val, pad.left - 4, y + 3);
+  }
+
+  ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(data.length / 6));
+  for (let i = 0; i < data.length; i += step) {
+    const x = pad.left + (cw * i / (data.length - 1 || 1));
+    const d = data[i].date;
+    ctx.fillText(`${d.getDate()}.${d.getMonth() + 1}`, x, h - 6);
+  }
+
+  ctx.beginPath();
+  ctx.strokeStyle = '#f0c040';
+  ctx.lineWidth = 2;
+  data.forEach((d, i) => {
+    const x = pad.left + (cw * i / (data.length - 1 || 1));
+    const y = pad.top + ch - (ch * d.batteryState / maxY);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  const gradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+  gradient.addColorStop(0, 'rgba(240,192,64,0.3)');
+  gradient.addColorStop(1, 'rgba(240,192,64,0)');
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.lineTo(pad.left, pad.top + ch);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  ctx.fillStyle = '#808098';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Batteriestand (Ah)', pad.left, pad.top - 6);
+}
+</script>
+</body>
+</html>
