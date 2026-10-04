@@ -140,78 +140,25 @@ export function App() {
         </div>
       </header>
 
-      <div className="mode-switcher">
-        <button
-          className={mode === 'timerange' ? 'active' : ''}
-          onClick={() => setMode('timerange')}
-        >
-          {t('modes.timerange')}
-        </button>
-        <button
-          className={mode === 'maxautonomy' ? 'active' : ''}
-          onClick={() => setMode('maxautonomy')}
-        >
-          {t('modes.maxautonomy')}
-        </button>
-      </div>
-
       <LocationCard location={location} onChange={setLocation} />
       <BatteryCard config={battery} onChange={setBattery} />
       <ConsumptionCard value={consumption} onChange={setConsumption} />
       <SolarCard config={solar} onChange={setSolar} />
       <SunExposureCard config={sunExposure} onChange={setSunExposure} />
 
-      {mode === 'timerange' && (
-        <DateRangeCard
-          startDate={startDate}
-          endDate={endDate}
-          onStartChange={setStartDate}
-          onEndChange={setEndDate}
-        />
-      )}
+      <DateRangeCard
+        startDate={startDate}
+        endDate={endDate}
+        onStartChange={setStartDate}
+        onEndChange={setEndDate}
+      />
 
-      <button className="calc-btn" onClick={mode === 'timerange' ? handleCalculateTimerange : handleCalculateMaxAutonomy}>
-        {mode === 'timerange' ? t('calculation') : t('modes.calculateMax')}
+      <button className="calc-btn" onClick={handleCalculateTimerange}>
+        {t('calculation')}
       </button>
 
       <div ref={resultRef}>
-        {result && (
-          <>
-            <ResultPanel result={result} />
-            {maxAutonomyData && (
-              <div className="card" style={{ marginTop: '16px' }}>
-                <h2 className="card-title">
-                  <span className="icon">⚙️</span> {t('modes.adjustConsumption')}
-                </h2>
-                <p className="card-hint">
-                  {t('modes.adjustHint')}
-                </p>
-                <div className="field">
-                  <label>{t('consumption.daily')}: {liveConsumption}Ah</label>
-                  <input
-                    type="range"
-                    min={5}
-                    max={500}
-                    step={5}
-                    value={liveConsumption}
-                    onChange={(e) => handleLiveConsumptionChange(Number(e.target.value))}
-                  />
-                </div>
-                <div style={{ marginTop: '16px', padding: '12px', background: 'var(--surface2)', borderRadius: '8px' }}>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text2)', marginBottom: '8px' }}>
-                    {t('modes.atConsumption')}
-                  </p>
-                  <div style={{ fontSize: '1.8rem', fontWeight: '700', color: 'var(--accent)' }}>
-                    {result.autonomyDays} {t('results.days')}
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text2)', marginTop: '4px' }}>
-                    {t('modes.maxAutonomy')}
-                  </p>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+        {result && <ResultPanel result={result} />}
       </div>
     </div>
   );

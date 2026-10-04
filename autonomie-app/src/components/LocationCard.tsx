@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { GeoLocation } from '@/types';
 import { requestLocation, reverseGeocode } from '@/lib/geolocation';
@@ -8,7 +9,7 @@ interface Props {
   onChange: (loc: GeoLocation) => void;
 }
 
-export function LocationCard({ location, onChange }: Props) {
+function LocationCardComponent({ location, onChange }: Props) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,3 +87,5 @@ export function LocationCard({ location, onChange }: Props) {
     </div>
   );
 }
+
+export const LocationCard = React.memo(LocationCardComponent);
