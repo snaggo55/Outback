@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { GeoLocation, BatteryConfig, SolarConfig, SunExposure, SimulationResult } from '@/types';
 import { runSimulation } from '@/lib/simulation';
+import { usePresets } from '@/hooks/usePresets';
 import { LocationCard } from '@/components/LocationCard';
 import { BatteryCard } from '@/components/BatteryCard';
 import { ConsumptionCard } from '@/components/ConsumptionCard';
@@ -9,6 +10,7 @@ import { SolarCard } from '@/components/SolarCard';
 import { SunExposureCard } from '@/components/SunExposureCard';
 import { DateRangeCard } from '@/components/DateRangeCard';
 import { ResultPanel } from '@/components/ResultPanel';
+import { PresetsManager } from '@/components/PresetsManager';
 
 function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
@@ -16,7 +18,7 @@ function formatDate(date: Date): string {
 
 export function App() {
   const { t, i18n } = useTranslation();
-  const [mode, setMode] = useState<'timerange' | 'maxautonomy'>('timerange');
+  const { presets, savePreset, loadPreset, deletePreset } = usePresets();
   const [location, setLocation] = useState<GeoLocation | null>(null);
   const [battery, setBattery] = useState<BatteryConfig>({
     capacityAh: 200,
@@ -139,6 +141,26 @@ export function App() {
           </button>
         </div>
       </header>
+
+      <PresetsManager
+        presets={presets}
+        onLoad={(preset) => {
+          setLocation(location); // Keep location
+          setBattery(preset.battery);
+          setConsumption(preset.consumption);
+          setSolar(preset.solar);
+          setSunExposure(preset.sunExposure);
+        }}
+        onSave={(name) => {
+          savePreset(name, {
+            battery,
+            solar,
+            sunExposure,
+            consumption,
+          });
+        }}
+        onDelete={deletePreset}
+      />
 
       <LocationCard location={location} onChange={setLocation} />
       <BatteryCard config={battery} onChange={setBattery} />
