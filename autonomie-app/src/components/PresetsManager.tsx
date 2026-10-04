@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Preset } from '@/hooks/usePresets';
 
 interface Props {
@@ -10,7 +9,6 @@ interface Props {
 }
 
 export function PresetsManager({ presets, onLoad, onSave, onDelete }: Props) {
-  const { t } = useTranslation();
   const [showInput, setShowInput] = useState(false);
   const [presetName, setPresetName] = useState('');
 

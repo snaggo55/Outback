@@ -3,7 +3,7 @@ import { runSimulation } from './simulation';
 
 describe('Simulation', () => {
   const testLocation = { latitude: 48.137, longitude: 11.576 };
-  const testBattery = { capacityAh: 200, voltage: 12, usablePercent: 0.95 };
+  const testBattery = { capacityAh: 200, voltage: 12 as const, usablePercent: 0.95 };
   const testSolar = { peakWatts: 400, mounting: 'flat' as const, tiltAngle: 30 };
   const testSunExposure = { fromHour: 8, toHour: 18, locationFactor: 1 };
 

@@ -30,4 +30,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  build: {
+    target: 'ES2020',
+    minify: 'terser',
+    terserOptions: {
+      compress: { drop_console: true },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          i18n: ['i18next', 'react-i18next'],
+        },
+      },
+    },
+  },
 });

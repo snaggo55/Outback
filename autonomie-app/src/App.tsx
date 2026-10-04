@@ -18,7 +18,7 @@ function formatDate(date: Date): string {
 
 export function App() {
   const { t, i18n } = useTranslation();
-  const { presets, savePreset, loadPreset, deletePreset } = usePresets();
+  const { presets, savePreset, deletePreset } = usePresets();
   const [location, setLocation] = useState<GeoLocation | null>(null);
   const [battery, setBattery] = useState<BatteryConfig>({
     capacityAh: 200,
@@ -44,8 +44,6 @@ export function App() {
   const [startDate, setStartDate] = useState(formatDate(today));
   const [endDate, setEndDate] = useState(formatDate(twoWeeks));
   const [result, setResult] = useState<SimulationResult | null>(null);
-  const [maxAutonomyData, setMaxAutonomyData] = useState<{ days: number; optimalConsumption: number } | null>(null);
-  const [liveConsumption, setLiveConsumption] = useState(50);
   const resultRef = useRef<HTMLDivElement>(null);
 
   function handleCalculateTimerange() {
@@ -70,55 +68,9 @@ export function App() {
       endDate: end,
     });
     setResult(simResult);
-    setMaxAutonomyData(null);
     setTimeout(() => {
       resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
-  }
-
-  function handleCalculateMaxAutonomy() {
-    if (!location) {
-      alert(t('errors.noLocation'));
-      return;
-    }
-
-    const oneYear = new Date(today);
-    oneYear.setFullYear(oneYear.getFullYear() + 1);
-
-    const simResult = runSimulation({
-      location,
-      battery,
-      solar,
-      sunExposure,
-      dailyConsumptionAh: consumption,
-      startDate: today,
-      endDate: oneYear,
-    });
-
-    setMaxAutonomyData({ days: simResult.autonomyDays, optimalConsumption: consumption });
-    setLiveConsumption(consumption);
-    setResult(simResult);
-    setTimeout(() => {
-      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-  }
-
-  function handleLiveConsumptionChange(newConsumption: number) {
-    setLiveConsumption(newConsumption);
-    const oneYear = new Date(today);
-    oneYear.setFullYear(oneYear.getFullYear() + 1);
-
-    const simResult = runSimulation({
-      location: location!,
-      battery,
-      solar,
-      sunExposure,
-      dailyConsumptionAh: newConsumption,
-      startDate: today,
-      endDate: oneYear,
-    });
-
-    setResult(simResult);
   }
 
   return (
