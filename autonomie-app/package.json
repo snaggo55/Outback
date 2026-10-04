@@ -1,6 +1,7 @@
 {
-  "name": "philipps-autonomie-rechner",
+  "name": "outback",
   "version": "1.0.0",
+  "description": "LiFePO4 Batterie Autonomie-Kalkulator für Wohnmobile",
   "private": true,
   "type": "module",
   "scripts": {

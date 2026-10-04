@@ -122,6 +122,12 @@ export function ResultPanel({ result }: Props) {
             `von ${result.totalDays} Tagen autark`
           )}
         </div>
+        {!result.isFullyAutonomous && result.averageBalanceAh < 0 && (
+          <div style={{ fontSize: '12px', color: '#999', marginTop: '8px', fontStyle: 'italic' }}>
+            Wegen beschleunigter Entladung und weniger Sonneneinstrahlung werden tägliche Verluste größer.
+            Ein weiterer Tag ist nicht mehr möglich.
+          </div>
+        )}
       </div>
 
       <div className="detail-grid">

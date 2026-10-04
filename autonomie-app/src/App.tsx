@@ -71,8 +71,8 @@ export function App() {
   return (
     <div className="container">
       <header>
-        <h1>Philipps Autonomie Rechner</h1>
-        <p>LiFePO4 Batterie · Wohnmobil</p>
+        <h1>Outback</h1>
+        <p>LiFePO4 Batterie Autonomie-Kalkulator</p>
       </header>
 
       <LocationCard location={location} onChange={setLocation} />
