@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { GeoLocation } from '@/types';
 import { requestLocation, reverseGeocode } from '@/lib/geolocation';
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function LocationCard({ location, onChange }: Props) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
@@ -24,7 +26,7 @@ export function LocationCard({ location, onChange }: Props) {
         onChange({ ...loc, name: placeName });
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Fehler bei Standortbestimmung');
+      setError(e instanceof Error ? e.message : t('location.error'));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ export function LocationCard({ location, onChange }: Props) {
   return (
     <div className="card">
       <h2 className="card-title">
-        <span className="icon">📍</span> Standort
+        <span className="icon">📍</span> {t('location.title')}
       </h2>
 
       <button
@@ -48,20 +50,20 @@ export function LocationCard({ location, onChange }: Props) {
         onClick={handleLocate}
         disabled={loading}
       >
-        {loading ? '⏳ Standort wird ermittelt...' : '📡 Standort bestimmen'}
+        {loading ? `⏳ ${t('location.loading')}` : t('location.button')}
       </button>
 
       {error && <p className="field-error">{error}</p>}
       {name && <p className="location-name">{name}</p>}
       {location?.accuracy != null && (
         <p className="location-accuracy">
-          Genauigkeit: {Math.round(location.accuracy)}m
+          {t('location.accuracy')}: {Math.round(location.accuracy)}m
         </p>
       )}
 
       <div className="row">
         <div className="field">
-          <label>Breitengrad</label>
+          <label>{t('location.latitude')}</label>
           <input
             type="number"
             step="0.001"
@@ -71,7 +73,7 @@ export function LocationCard({ location, onChange }: Props) {
           />
         </div>
         <div className="field">
-          <label>Längengrad</label>
+          <label>{t('location.longitude')}</label>
           <input
             type="number"
             step="0.001"

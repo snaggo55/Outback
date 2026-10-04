@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SimulationResult } from '@/types';
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export function ResultPanel({ result }: Props) {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -83,7 +85,7 @@ export function ResultPanel({ result }: Props) {
     ctx.fillStyle = '#808098';
     ctx.font = '10px sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('Batteriestand (Ah)', pad.left, pad.top - 6);
+    ctx.fillText(t('results.ah'), pad.left, pad.top - 6);
   }
 
   const solarPct = Math.min(
@@ -115,11 +117,11 @@ export function ResultPanel({ result }: Props) {
         <div className="days-label">
           {result.isFullyAutonomous ? (
             <>
-              Tage autark{' '}
+              {t('results.days')}{' '}
               <span style={{ color: 'var(--green)' }}>(gesamter Zeitraum)</span>
             </>
           ) : (
-            `von ${result.totalDays} Tagen autark`
+            `von ${result.totalDays} ${t('results.days')}`
           )}
         </div>
         {!result.isFullyAutonomous && result.averageBalanceAh < 0 && (
@@ -133,7 +135,7 @@ export function ResultPanel({ result }: Props) {
       <div className="detail-grid">
         <div className="detail-item">
           <div className="val">{result.averageSolarYieldAh.toFixed(1)}</div>
-          <div className="lbl">Solar Ertrag/Tag (Ah)</div>
+          <div className="lbl">{t('results.dailyGeneration')} (Ah)</div>
         </div>
         <div className="detail-item">
           <div className="val">
@@ -158,7 +160,7 @@ export function ResultPanel({ result }: Props) {
 
       <div className="bar">
         <div className="bar-label">
-          <span>Solar vs. Verbrauch</span>
+          <span>Solar vs. Verbrauch / Solar vs. Consumption</span>
           <span>{solarPct.toFixed(0)}%</span>
         </div>
         <div className="bar-track">

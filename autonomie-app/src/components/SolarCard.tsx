@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { SolarConfig } from '@/types';
 
 interface Props {
@@ -6,14 +7,16 @@ interface Props {
 }
 
 export function SolarCard({ config, onChange }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="card">
       <h2 className="card-title">
-        <span className="icon">☀️</span> Solarpaneele
+        <span className="icon">☀️</span> {t('solar.title')}
       </h2>
 
       <div className="field">
-        <label>Gesamtleistung der Solarpaneele</label>
+        <label>{t('solar.power')}</label>
         <input
           type="number"
           min={50}
@@ -28,26 +31,26 @@ export function SolarCard({ config, onChange }: Props) {
       </div>
 
       <div className="field">
-        <label>Montage</label>
+        <label>{t('solar.mounting')}</label>
         <div className="toggle-group">
           <button
             className={config.mounting === 'flat' ? 'active' : ''}
             onClick={() => onChange({ ...config, mounting: 'flat' })}
           >
-            Flach
+            {t('solar.flat')}
           </button>
           <button
             className={config.mounting === 'angled' ? 'active' : ''}
             onClick={() => onChange({ ...config, mounting: 'angled' })}
           >
-            Aufgeständert
+            {t('solar.angled')}
           </button>
         </div>
       </div>
 
       {config.mounting === 'angled' && (
         <div className="field">
-          <label>Aufstellwinkel: {config.tiltAngle}°</label>
+          <label>{t('solar.tilt')}: {config.tiltAngle}°</label>
           <input
             type="range"
             min={5}

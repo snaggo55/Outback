@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { SunExposure } from '@/types';
 
 interface Props {
@@ -5,11 +6,11 @@ interface Props {
   onChange: (config: SunExposure) => void;
 }
 
-const SHADE_PRESETS = [
-  { label: 'Kein Schatten', value: 1.0 },
-  { label: 'Leichter Schatten', value: 0.8 },
-  { label: 'Mäßiger Schatten', value: 0.6 },
-  { label: 'Starker Schatten', value: 0.4 },
+const SHADE_PRESET_KEYS = [
+  { key: 'sunExposure.noShadow', value: 1.0 },
+  { key: 'sunExposure.lightShadow', value: 0.8 },
+  { key: 'sunExposure.moderateShadow', value: 0.6 },
+  { key: 'sunExposure.heavyShadow', value: 0.4 },
 ] as const;
 
 function decimalToTime(dec: number): string {
@@ -24,20 +25,21 @@ function timeToDecimal(time: string): number {
 }
 
 export function SunExposureCard({ config, onChange }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="card">
       <h2 className="card-title">
-        <span className="icon">🌅</span> Sonneneinstrahlung
+        <span className="icon">🌅</span> {t('sunExposure.title')}
       </h2>
 
       <p className="card-hint">
-        Zeitraum, in dem die Paneele tatsächlich Sonne bekommen
-        (ohne Abschattung durch Bäume, Gebäude, etc.).
+        {t('sunExposure.hint')}
       </p>
 
       <div className="row">
         <div className="field">
-          <label>Sonne von</label>
+          <label>{t('sunExposure.from')}</label>
           <input
             type="time"
             value={decimalToTime(config.fromHour)}
@@ -47,7 +49,7 @@ export function SunExposureCard({ config, onChange }: Props) {
           />
         </div>
         <div className="field">
-          <label>Sonne bis</label>
+          <label>{t('sunExposure.to')}</label>
           <input
             type="time"
             value={decimalToTime(config.toHour)}
@@ -59,12 +61,12 @@ export function SunExposureCard({ config, onChange }: Props) {
       </div>
 
       <div className="field">
-        <label>Schattenwurf auf Paneele</label>
+        <label>{t('sunExposure.shadow')}</label>
         <p className="card-hint" style={{ marginBottom: '10px' }}>
-          Wie viel Schatten fällt auf deine Solarpaneele durch Bäume, Gebäude oder andere Hindernisse?
+          {t('sunExposure.shadowHint')}
         </p>
         <div className="presets">
-          {SHADE_PRESETS.map((preset) => (
+          {SHADE_PRESET_KEYS.map((preset) => (
             <button
               key={preset.value}
               className={Math.abs(config.locationFactor - preset.value) < 0.01 ? 'active' : ''}
@@ -72,12 +74,12 @@ export function SunExposureCard({ config, onChange }: Props) {
                 onChange({ ...config, locationFactor: preset.value })
               }
             >
-              {preset.label}
+              {t(preset.key)}
             </button>
           ))}
         </div>
         <div className="slider-value" style={{ marginTop: '8px' }}>
-          → {Math.round(config.locationFactor * 100)}% Ertrag
+          → {Math.round(config.locationFactor * 100)}% {t('sunExposure.yield')}
         </div>
       </div>
     </div>

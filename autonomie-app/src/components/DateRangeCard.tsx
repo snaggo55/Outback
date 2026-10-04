@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface Props {
   startDate: string;
   endDate: string;
@@ -11,14 +13,16 @@ export function DateRangeCard({
   onStartChange,
   onEndChange,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="card">
       <h2 className="card-title">
-        <span className="icon">📅</span> Reisezeitraum
+        <span className="icon">📅</span> {t('dateRange.title')}
       </h2>
       <div className="row">
         <div className="field">
-          <label>Von</label>
+          <label>{t('dateRange.start')}</label>
           <input
             type="date"
             value={startDate}
@@ -26,7 +30,7 @@ export function DateRangeCard({
           />
         </div>
         <div className="field">
-          <label>Bis</label>
+          <label>{t('dateRange.end')}</label>
           <input
             type="date"
             value={endDate}

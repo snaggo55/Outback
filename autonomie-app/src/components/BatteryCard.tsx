@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { BatteryConfig } from '@/types';
 
 interface Props {
@@ -8,14 +9,16 @@ interface Props {
 const VOLTAGES = [12, 24, 48] as const;
 
 export function BatteryCard({ config, onChange }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="card">
       <h2 className="card-title">
-        <span className="icon">🔋</span> Batterie
+        <span className="icon">🔋</span> {t('battery.title')}
       </h2>
 
       <div className="field">
-        <label>Batteriekapazität</label>
+        <label>{t('battery.capacity')}</label>
         <input
           type="number"
           min={50}
@@ -27,12 +30,12 @@ export function BatteryCard({ config, onChange }: Props) {
           }
         />
         <span className="unit">
-          Amperestunden (Ah) · LiFePO4 nutzbar: {config.usablePercent * 100}%
+          {t('battery.capacity')} · {t('battery.usable')}: {config.usablePercent * 100}%
         </span>
       </div>
 
       <div className="field">
-        <label>Systemspannung</label>
+        <label>{t('battery.voltage')}</label>
         <div className="toggle-group">
           {VOLTAGES.map((v) => (
             <button

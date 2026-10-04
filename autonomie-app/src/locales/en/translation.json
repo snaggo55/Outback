@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "Outback",
+    "subtitle": "LiFePO4 Battery Autonomy Calculator"
+  },
+  "location": {
+    "title": "Location",
+    "button": "📡 Determine Location",
+    "loading": "⏳ Determining location...",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "accuracy": "Accuracy",
+    "error": "Error determining location"
+  },
+  "battery": {
+    "title": "Battery",
+    "capacity": "Battery Capacity",
+    "voltage": "System Voltage",
+    "usable": "LiFePO4 usable"
+  },
+  "consumption": {
+    "title": "Consumption",
+    "daily": "Daily Consumption",
+    "unit": "Ampere-hours per day",
+    "economical": "Economical",
+    "normal": "Normal",
+    "comfort": "Comfort",
+    "high": "High"
+  },
+  "solar": {
+    "title": "Solar Panel",
+    "power": "Peak Power",
+    "mounting": "Mounting",
+    "tilt": "Tilt Angle",
+    "flat": "Flat",
+    "angled": "Angled Mount"
+  },
+  "sunExposure": {
+    "title": "Sun Exposure",
+    "hint": "Time period when the panels actually receive sunlight (without shadows from trees, buildings, etc.).",
+    "from": "Sun from",
+    "to": "Sun to",
+    "shadow": "Shadow on panels",
+    "shadowHint": "How much shadow falls on your solar panels from trees, buildings or other obstacles?",
+    "noShadow": "No shadow",
+    "lightShadow": "Light shadow",
+    "moderateShadow": "Moderate shadow",
+    "heavyShadow": "Heavy shadow",
+    "yield": "Yield"
+  },
+  "dateRange": {
+    "title": "Date Range",
+    "start": "Start Date",
+    "end": "End Date"
+  },
+  "calculation": "Calculate Autonomy",
+  "modes": {
+    "timerange": "⏱️ Time Range",
+    "maxautonomy": "🔋 Max Autonomy",
+    "calculateMax": "🔋 Calculate Maximum Autonomy",
+    "adjustConsumption": "Adjust Consumption",
+    "adjustHint": "Adjust consumption and see live how long you can stay parked",
+    "atConsumption": "At this consumption:",
+    "maxAutonomy": "maximum autonomy"
+  },
+  "results": {
+    "title": "Results",
+    "autonomy": "Autonomy",
+    "days": "Days",
+    "dailyGeneration": "Daily Generation",
+    "wh": "Wh",
+    "ah": "Ah",
+    "surplus": "Surplus",
+    "deficit": "Deficit"
+  },
+  "errors": {
+    "noLocation": "Please determine location or enter coordinates.",
+    "invalidDate": "Please select a valid time range."
+  }
+}

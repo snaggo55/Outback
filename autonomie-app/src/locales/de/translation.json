@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "Outback",
+    "subtitle": "LiFePO4 Batterie Autonomie-Kalkulator"
+  },
+  "location": {
+    "title": "Standort",
+    "button": "📡 Standort bestimmen",
+    "loading": "⏳ Standort wird ermittelt...",
+    "latitude": "Breitengrad",
+    "longitude": "Längengrad",
+    "accuracy": "Genauigkeit",
+    "error": "Fehler bei Standortbestimmung"
+  },
+  "battery": {
+    "title": "Batterie",
+    "capacity": "Batteriekapazität",
+    "voltage": "Systemspannung",
+    "usable": "LiFePO4 nutzbar"
+  },
+  "consumption": {
+    "title": "Verbrauch",
+    "daily": "Täglicher Verbrauch",
+    "unit": "Amperestunden pro Tag",
+    "economical": "Sparsam",
+    "normal": "Normal",
+    "comfort": "Komfort",
+    "high": "Hoch"
+  },
+  "solar": {
+    "title": "Solaranlage",
+    "power": "Peak Power",
+    "mounting": "Befestigung",
+    "tilt": "Neigungswinkel",
+    "flat": "Flach",
+    "angled": "Aufgeständert"
+  },
+  "sunExposure": {
+    "title": "Sonneneinstrahlung",
+    "hint": "Zeitraum, in dem die Paneele tatsächlich Sonne bekommen (ohne Abschattung durch Bäume, Gebäude, etc.).",
+    "from": "Sonne von",
+    "to": "Sonne bis",
+    "shadow": "Schattenwurf auf Paneele",
+    "shadowHint": "Wie viel Schatten fällt auf deine Solarpaneele durch Bäume, Gebäude oder andere Hindernisse?",
+    "noShadow": "Kein Schatten",
+    "lightShadow": "Leichter Schatten",
+    "moderateShadow": "Mäßiger Schatten",
+    "heavyShadow": "Starker Schatten",
+    "yield": "Ertrag"
+  },
+  "dateRange": {
+    "title": "Zeitraum",
+    "start": "Startdatum",
+    "end": "Enddatum"
+  },
+  "calculation": "Autonomie berechnen",
+  "modes": {
+    "timerange": "⏱️ Zeitraum",
+    "maxautonomy": "🔋 Max. Autonomie",
+    "calculateMax": "🔋 Maximale Autonomie berechnen",
+    "adjustConsumption": "Verbrauch anpassen",
+    "adjustHint": "Verbrauch einstellen und live sehen, wie lange du maximal stehen kannst",
+    "atConsumption": "Bei diesem Verbrauch:",
+    "maxAutonomy": "maximale Autonomie"
+  },
+  "results": {
+    "title": "Ergebnisse",
+    "autonomy": "Autonomie",
+    "days": "Tage",
+    "dailyGeneration": "Tägliche Stromerzeugung",
+    "wh": "Wh",
+    "ah": "Ah",
+    "surplus": "Überschuss",
+    "deficit": "Defizit"
+  },
+  "errors": {
+    "noLocation": "Bitte Standort bestimmen oder Koordinaten eingeben.",
+    "invalidDate": "Bitte gültigen Zeitraum wählen."
+  }
+}
