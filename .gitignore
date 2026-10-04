@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Development
+.vite/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# E2E Tests
+test-results/
+blob-report/
+playwright-report/
+.auth/
+
+# Lighthouse CI
+.lighthouseci/
+
+# macOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Build artifacts
+tsconfig.tsbuildinfo
