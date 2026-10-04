@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'Philipps Autonomie Rechner',
-        short_name: 'Autonomie',
+        name: 'Outback',
+        short_name: 'Outback',
         description: 'LiFePO4 Solar-Autonomie Berechnung für Wohnmobile',
         theme_color: '#1a1a2e',
         background_color: '#0f0f1a',
