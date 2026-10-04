@@ -2,3 +2,26 @@ node_modules
 dist
 .vite
 *.local
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Playwright
+test-results/
+blob-report/
+playwright-report/
+.auth/
+
+# Lighthouse CI
+.lighthouseci/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { GeoLocation, BatteryConfig, SolarConfig, SunExposure, SimulationResult } from '@/types';
 import { runSimulation } from '@/lib/simulation';
 import { usePresets } from '@/hooks/usePresets';
+import { useToast } from '@/hooks/useToast';
 import { LocationCard } from '@/components/LocationCard';
 import { BatteryCard } from '@/components/BatteryCard';
 import { ConsumptionCard } from '@/components/ConsumptionCard';
@@ -11,6 +12,7 @@ import { SunExposureCard } from '@/components/SunExposureCard';
 import { DateRangeCard } from '@/components/DateRangeCard';
 import { ResultPanel } from '@/components/ResultPanel';
 import { PresetsManager } from '@/components/PresetsManager';
+import { ToastContainer } from '@/components/ToastContainer';
 
 function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
@@ -19,6 +21,7 @@ function formatDate(date: Date): string {
 export function App() {
   const { t, i18n } = useTranslation();
   const { presets, savePreset, deletePreset } = usePresets();
+  const { toasts, removeToast, error: showError } = useToast();
   const [location, setLocation] = useState<GeoLocation | null>(null);
   const [battery, setBattery] = useState<BatteryConfig>({
     capacityAh: 200,
@@ -48,13 +51,13 @@ export function App() {
 
   function handleCalculateTimerange() {
     if (!location) {
-      alert(t('errors.noLocation'));
+      showError(t('errors.noLocation'));
       return;
     }
     const start = new Date(startDate);
     const end = new Date(endDate);
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
-      alert(t('errors.invalidDate'));
+      showError(t('errors.invalidDate'));
       return;
     }
 
@@ -74,8 +77,10 @@ export function App() {
   }
 
   return (
-    <div className="container">
-      <header>
+    <>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <div className="container">
+        <header>
         <h1>{t('app.title')}</h1>
         <p>{t('app.subtitle')}</p>
         <div className="language-switcher">
@@ -131,9 +136,10 @@ export function App() {
         {t('calculation')}
       </button>
 
-      <div ref={resultRef}>
-        {result && <ResultPanel result={result} />}
+        <div ref={resultRef}>
+          {result && <ResultPanel result={result} />}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
