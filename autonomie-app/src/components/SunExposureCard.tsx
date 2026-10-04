@@ -5,6 +5,13 @@ interface Props {
   onChange: (config: SunExposure) => void;
 }
 
+const SHADE_PRESETS = [
+  { label: 'Kein Schatten', value: 1.0 },
+  { label: 'Leichter Schatten', value: 0.8 },
+  { label: 'Mäßiger Schatten', value: 0.6 },
+  { label: 'Starker Schatten', value: 0.4 },
+] as const;
+
 function decimalToTime(dec: number): string {
   const h = Math.floor(dec);
   const m = Math.round((dec - h) * 60);
@@ -25,7 +32,7 @@ export function SunExposureCard({ config, onChange }: Props) {
 
       <p className="card-hint">
         Zeitraum, in dem die Paneele tatsächlich Sonne bekommen
-        (Abschattung durch Bäume, Gebäude etc. berücksichtigen).
+        (ohne Abschattung durch Bäume, Gebäude, etc.).
       </p>
 
       <div className="row">
@@ -52,20 +59,26 @@ export function SunExposureCard({ config, onChange }: Props) {
       </div>
 
       <div className="field">
-        <div className="slider-value">
-          {Math.round(config.locationFactor * 100)}%
+        <label>Schattenwurf auf Paneele</label>
+        <p className="card-hint" style={{ marginBottom: '10px' }}>
+          Wie viel Schatten fällt auf deine Solarpaneele durch Bäume, Gebäude oder andere Hindernisse?
+        </p>
+        <div className="presets">
+          {SHADE_PRESETS.map((preset) => (
+            <button
+              key={preset.value}
+              className={Math.abs(config.locationFactor - preset.value) < 0.01 ? 'active' : ''}
+              onClick={() =>
+                onChange({ ...config, locationFactor: preset.value })
+              }
+            >
+              {preset.label}
+            </button>
+          ))}
         </div>
-        <label>Standortfaktor (Verschattung, Ausrichtung)</label>
-        <input
-          type="range"
-          min={10}
-          max={100}
-          step={5}
-          value={config.locationFactor * 100}
-          onChange={(e) =>
-            onChange({ ...config, locationFactor: Number(e.target.value) / 100 })
-          }
-        />
+        <div className="slider-value" style={{ marginTop: '8px' }}>
+          → {Math.round(config.locationFactor * 100)}% Ertrag
+        </div>
       </div>
     </div>
   );
